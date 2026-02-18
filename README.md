@@ -1,3 +1,3 @@
 # PG_Labs
 
-Walkthroughs for Offsec Proving Ground Machines.
+Offsec Proving Grounds writeups
